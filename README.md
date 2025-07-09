@@ -90,7 +90,7 @@ Here’s what you provide in the form:
    ```bash
    In the server directory, create a .env file:
    MONGO_URI=your_mongodb_connection_string
-   PORT=5000
+   PORT=your_port_numnber
 5. **Run the App**
    ```bash
    Start Backend:
