@@ -24,7 +24,7 @@ app.use(
 connectDB();
 
 app.use("/user", userRoutes)
-app.use("/docs",docsRoutes )
+app.use("/docs",docsRoutes)
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

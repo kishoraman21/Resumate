@@ -1,37 +1,47 @@
 const Document = require("../models/documentModel.js");
+const generateWithGemini = require("../utils/geminiGenerate.js");
 
 //create document
 
 const createDoc = async (req, res) => {
-  const document = new Document({
-    user: req.user._id,
-    jobTitle: req.body.jobTitle,
-    education: [
-      {
-        degree: req.body.degree,
-        institution: req.body.institution,
-        year: req.body.year,
-      },
-    ],
-    skills: [
-      {
-        skillname: req.body.skillname,
-        experience: req.body.experience,
-      },
-    ],
-    projects: req.body.projects,
-    finalContent: req.body.finalContent,
-  });
-
   try {
+    const { jobTitle, degree, institution, year, skillname, experience, projects, name } = req.body;
+
+    const aiGeneratedContent = await generateWithGemini(
+      // name,
+      jobTitle,
+      experience,
+      skillname,
+      
+    );
+
+    const document = new Document({
+      user: req.user._id,
+      jobTitle,
+      education: [
+        {
+          degree,
+          institution,
+          year,
+        },
+      ],
+      skills: [
+        {
+          skillname,
+          experience,
+        },
+      ],
+      projects,
+      finalContent: aiGeneratedContent,
+    });
+
     const newDoc = await document.save();
     res.status(201).json({ message: "Document created successfully", newDoc });
   } catch (error) {
-    console.log(error);
-    res.status(400).json({ message: "error while saving to db", error });
+    console.error(error);
+    res.status(400).json({ message: "Error while saving to DB", error });
   }
 };
-
 //fetch docs
 
 const fetchDoc = async (req, res) => {

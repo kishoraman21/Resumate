@@ -57,7 +57,7 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
       {/* Fixed Navigation Header */}
-      <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-4xl px-4">
+      <nav className="fixed mt-5 top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-4xl px-4">
         <div className="bg-gray-900/80 backdrop-blur-md rounded-full border border-gray-800/50 px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}

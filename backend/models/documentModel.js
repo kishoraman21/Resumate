@@ -28,15 +28,9 @@ const documentSchema = new mongoose.Schema({
       experience: { type: String, required: true },
     },
   ],
-  projects: [
-    {
-      projectName: { type: String, required: true },
-      description: { type: String, required: true },
-      link: { type: String, required: true },
-    },
-  ],
+  projects: [String],
 
-  finalContent: { type: String, required: true },
+  finalContent: { type: String, required: true},
 });
 
 const documentModel = mongoose.model("Documents", documentSchema)

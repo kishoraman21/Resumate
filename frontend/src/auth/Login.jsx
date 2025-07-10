@@ -27,6 +27,7 @@ export default function Login() {
         }
       );
       console.log(data);
+      
       toast.success(data.message || "User logged in successfully");
       localStorage.setItem("token", data.token,);
       navigate("/resume");
