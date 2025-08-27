@@ -9,7 +9,7 @@ import LandingPage from "./components/LandingPage";
 import ResumeFile from "./components/ResumeFile";
 
 function App() {
-  const token = localStorage.getItem("jwt");
+  const token = localStorage.getItem("token");
   return (
     <>
       <Routes>

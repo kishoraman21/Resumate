@@ -11,6 +11,17 @@ const documentSchema = new mongoose.Schema({
     required: true,
   },
 
+  personalInfo: [
+    {
+      phoneNumber: {
+        type: String,
+        required: true,
+      },
+      gmail: { type: String, required: true },
+      location: { type: String, required: true },
+    },
+  ],
+
   education: [
     {
       degree: {
@@ -24,15 +35,16 @@ const documentSchema = new mongoose.Schema({
 
   skills: [
     {
-      skillname: { type: String, required: true },
-      experience: { type: String, required: true },
+      frontendSkills: { type: String},
+      backendSkills:{ type: String },
+      workExperience: { type: String},
     },
   ],
   projects: [String],
 
-  finalContent: { type: String, required: true},
+  finalContent: { type: String, required: true },
 });
 
-const documentModel = mongoose.model("Documents", documentSchema)
+const documentModel = mongoose.model("Documents", documentSchema);
 
-module.exports = documentModel
+module.exports = documentModel;

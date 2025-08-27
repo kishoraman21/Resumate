@@ -5,12 +5,12 @@ const generateWithGemini = require("../utils/geminiGenerate.js");
 
 const createDoc = async (req, res) => {
   try {
-    const { jobTitle, degree, institution, year, skillname, experience, projects, name } = req.body;
+    const { jobTitle, degree, institution, year, skillname, workExperience, projects, name } = req.body;
 
     const aiGeneratedContent = await generateWithGemini(
       // name,
       jobTitle,
-      experience,
+      workExperience,
       skillname,
       
     );
@@ -28,7 +28,6 @@ const createDoc = async (req, res) => {
       skills: [
         {
           skillname,
-          experience,
         },
       ],
       projects,
