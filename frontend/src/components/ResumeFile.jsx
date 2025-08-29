@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import axios from "axios"
+import axios from "axios";
 import {
   User,
   Briefcase,
@@ -23,6 +23,25 @@ import {
   Calendar,
   Building,
 } from "lucide-react";
+
+//modal code
+const Modal = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-md p-6 bg-[#1C1C23] rounded-2xl shadow-lg border border-white/10"
+      >
+        {children}
+      </div>
+    </div>
+  );
+};
 
 const ResumeFile = () => {
   const [formData, setFormData] = useState({
@@ -51,6 +70,7 @@ const ResumeFile = () => {
   const [lastSavedVersion, setLastSavedVersion] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [isRegenerateModalOpen, setIsRegenerateModalOpen] = useState(false); //modal state
 
   const [workExpForm, setWorkExpForm] = useState({
     companyName: "",
@@ -60,7 +80,7 @@ const ResumeFile = () => {
   });
 
   const user = JSON.parse(localStorage.getItem("user"));
-  const userName = user?.name || "User";
+  // const userName = user?.name || "User";
 
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100);
@@ -85,7 +105,11 @@ const ResumeFile = () => {
   };
 
   const addWorkExperience = () => {
-    if (workExpForm.companyName.trim() && workExpForm.jobRole.trim() && workExpForm.duration.trim()) {
+    if (
+      workExpForm.companyName.trim() &&
+      workExpForm.jobRole.trim() &&
+      workExpForm.duration.trim()
+    ) {
       setFormData((prev) => ({
         ...prev,
         workExperience: [...prev.workExperience, { ...workExpForm }],
@@ -190,72 +214,100 @@ const ResumeFile = () => {
       setShowPreview(true);
       setDocumentId(data.newDoc._id);
       setHasUnsavedChanges(false);
-
     } catch (error) {
       console.error("Error generating AI text:", error);
-      const errorMessage = error.response?.data?.message || error.message || "Failed to generate resume";
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to generate resume";
       alert("Error generating resume: " + errorMessage);
     } finally {
       setIsGenerating(false);
     }
   };
 
+  const handleConfirmRegenerate = async () => {
+    setIsRegenerateModalOpen(false); // Close the modal first
+    await generateAIText(); // Then run the generation logic
+  };
+
   const saveChangesLocally = () => {
     setLastSavedVersion(editedResumeText);
     setAiGeneratedText(editedResumeText);
     setHasUnsavedChanges(false);
-    
-    const originalButton = document.querySelector('#save-button');
+
+    const originalButton = document.querySelector("#save-button");
     if (originalButton) {
       const originalText = originalButton.innerHTML;
-      originalButton.innerHTML = '<span class="flex items-center space-x-2"><span>✓</span><span>Saved!</span></span>';
-      originalButton.classList.add('bg-green-600');
-      originalButton.classList.remove('bg-indigo-600');
-      
+      originalButton.innerHTML =
+        '<span class="flex items-center space-x-2"><span>✓</span><span>Saved!</span></span>';
+      originalButton.classList.add("bg-green-600");
+      originalButton.classList.remove("bg-indigo-600");
+
       setTimeout(() => {
         originalButton.innerHTML = originalText;
-        originalButton.classList.remove('bg-green-600');
-        originalButton.classList.add('bg-indigo-600');
+        originalButton.classList.remove("bg-green-600");
+        originalButton.classList.add("bg-indigo-600");
       }, 2000);
     }
   };
 
   const discardChanges = () => {
-    if (window.confirm("Are you sure you want to discard your changes? This action cannot be undone.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to discard your changes? This action cannot be undone."
+      )
+    ) {
       setEditedResumeText(lastSavedVersion);
       setHasUnsavedChanges(false);
     }
   };
 
   const regenerateWithCurrentData = async () => {
-    if (window.confirm("This will regenerate the resume with your current form data. Any manual edits will be lost. Continue?")) {
+    if (
+      window.confirm(
+        "This will regenerate the resume with your current form data. Any manual edits will be lost. Continue?"
+      )
+    ) {
       await generateAIText();
     }
   };
 
   const formatResumeContent = (content) => {
     return content
-      .replace(/\*/g, '')
-      .replace(/^(\s*)-/gm, '• ')
-      .replace(/^(\s*)([A-Z][^:]*):([^•\n]*)/gm, '<strong>$2:</strong>$3')
-      .replace(/\n/g, '<br>');
+      .replace(/\*/g, "")
+      .replace(/^(\s*)-/gm, "• ")
+      .replace(/^(\s*)([A-Z][^:]*):([^•\n]*)/gm, "<strong>$2:</strong>$3")
+      .replace(/\n/g, "<br>");
   };
 
   const downloadPDF = () => {
     const currentResumeText = editedResumeText || aiGeneratedText;
     const formattedContent = formatResumeContent(currentResumeText);
-    
-    const workExpSection = formData.workExperience.length > 0 
-      ? formData.workExperience.map(exp => `
+
+    const workExpSection =
+      formData.workExperience.length > 0
+        ? formData.workExperience
+            .map(
+              (exp) => `
         <div style="margin-bottom: 15px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
-            <div><strong>${exp.jobRole}</strong> | <em>${exp.companyName}</em></div>
-            <div style="text-align: right;"><strong>${exp.duration}</strong></div>
+            <div><strong>${exp.jobRole}</strong> | <em>${
+                exp.companyName
+              }</em></div>
+            <div style="text-align: right;"><strong>${
+              exp.duration
+            }</strong></div>
           </div>
-          <div style="margin-left: 10px;">• ${exp.workDescription.replace(/\n/g, '<br>• ')}</div>
+          <div style="margin-left: 10px;">• ${exp.workDescription.replace(
+            /\n/g,
+            "<br>• "
+          )}</div>
         </div>
-      `).join('')
-      : `
+      `
+            )
+            .join("")
+        : `
         <div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
             <div><strong>${formData.jobTitle}</strong></div>
@@ -265,26 +317,35 @@ const ResumeFile = () => {
           <div>• Professional experience details</div>
         </div>
       `;
-    
+
     const printContent = `
       <div style="font-family: 'Times New Roman', serif; max-width: 800px; margin: 0 auto; padding: 40px; line-height: 1.4; color: #000;">
         <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 15px;">
-          <h1 style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px; text-transform: uppercase;">${formData.name}</h1>
+          <h1 style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px; text-transform: uppercase;">${
+            formData.name
+          }</h1>
           <div style="margin-top: 8px; font-size: 12px;">
-            <span>📞 ${formData.phoneNumber || 'Phone Number'}</span> | 
-            <span>✉️ ${formData.gmail || formData.name.toLowerCase().replace(' ', '') + '@gmail.com'}</span> | 
-            <span>📍 ${formData.location || 'Location'}</span>
+            <span>📞 ${formData.phoneNumber || "Phone Number"}</span> | 
+            <span>✉️ ${
+              formData.gmail ||
+              formData.name.toLowerCase().replace(" ", "") + "@gmail.com"
+            }</span> | 
+            <span>📍 ${formData.location || "Location"}</span>
           </div>
         </div>
         
-        ${formData.description ? `
+        ${
+          formData.description
+            ? `
         <div style="margin-bottom: 25px;">
           <h2 style="font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 2px;">About Me</h2>
           <div style="font-size: 12px; text-align: justify; margin-left: 10px;">
             ${formData.description}
           </div>
         </div>
-        ` : ''}
+        `
+            : ""
+        }
         
         <div style="margin-bottom: 25px;">
           <h2 style="font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 2px;">Professional Summary</h2>
@@ -298,11 +359,11 @@ const ResumeFile = () => {
           <div style="font-size: 12px; margin-left: 10px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <strong>${formData.degree || 'Degree'}</strong><br>
-                <em>${formData.institution || 'Institution'}</em>
+                <strong>${formData.degree || "Degree"}</strong><br>
+                <em>${formData.institution || "Institution"}</em>
               </div>
               <div style="text-align: right;">
-                <strong>${formData.year || 'Year'}</strong>
+                <strong>${formData.year || "Year"}</strong>
               </div>
             </div>
           </div>
@@ -318,9 +379,12 @@ const ResumeFile = () => {
         <div style="margin-bottom: 25px;">
           <h2 style="font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 2px;">Projects</h2>
           <div style="font-size: 12px; margin-left: 10px;">
-            ${formData.projects.length > 0 
-              ? formData.projects.map((project) => `• ${project}`).join('<br>')
-              : '• Project details will be listed here'
+            ${
+              formData.projects.length > 0
+                ? formData.projects
+                    .map((project) => `• ${project}`)
+                    .join("<br>")
+                : "• Project details will be listed here"
             }
           </div>
         </div>
@@ -328,8 +392,16 @@ const ResumeFile = () => {
         <div style="margin-bottom: 25px;">
           <h2 style="font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 2px;">Technical Skills</h2>
           <div style="font-size: 12px; margin-left: 10px;">
-            ${formData.frontendSkills ? `<div><strong>Frontend:</strong> ${formData.frontendSkills}</div>` : ''}
-            ${formData.backendSkills ? `<div><strong>Backend:</strong> ${formData.backendSkills}</div>` : ''}
+            ${
+              formData.frontendSkills
+                ? `<div><strong>Frontend:</strong> ${formData.frontendSkills}</div>`
+                : ""
+            }
+            ${
+              formData.backendSkills
+                ? `<div><strong>Backend:</strong> ${formData.backendSkills}</div>`
+                : ""
+            }
           </div>
         </div>
       </div>
@@ -367,16 +439,32 @@ const ResumeFile = () => {
       formData.phoneNumber,
       formData.gmail,
       formData.location,
-      formData.frontendSkills || formData.backendSkills
+      formData.frontendSkills || formData.backendSkills,
     ];
-    const filledFields = requiredFields.filter(field => field && field.toString().trim()).length;
+    const filledFields = requiredFields.filter(
+      (field) => field && field.toString().trim()
+    ).length;
     return Math.round((filledFields / requiredFields.length) * 100);
   };
 
   const isFormComplete = () => {
-    return formData.name && formData.jobTitle && formData.phoneNumber && 
-           formData.gmail && formData.location && (formData.frontendSkills || formData.backendSkills);
+    return (
+      formData.name &&
+      formData.jobTitle &&
+      formData.phoneNumber &&
+      formData.gmail &&
+      formData.location &&
+      (formData.frontendSkills || formData.backendSkills)
+    );
   };
+
+  const [username, setUsername] = useState("");
+  useEffect(() => {
+    const name = localStorage.getItem("username");
+    if (name) {
+      setUsername(name);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#1A1929] text-white overflow-hidden relative">
@@ -393,8 +481,6 @@ const ResumeFile = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
-              
-
               <div className="flex items-center space-x-3">
                 <div className="bg-indigo-600/80 p-2 rounded-lg">
                   <FileText className="h-8 w-8 text-white" />
@@ -415,7 +501,7 @@ const ResumeFile = () => {
             <div className="flex items-center space-x-4">
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-gray-400">Welcome back,</span>
-                <span className="text-indigo-400 font-medium">{userName}</span>
+                <span className="text-indigo-400 font-medium">{username}</span>
               </div>
               {hasUnsavedChanges && (
                 <div className="flex items-center gap-2 bg-yellow-900/30 text-yellow-300 text-xs px-3 py-1 rounded-full border border-yellow-600/30">
@@ -463,12 +549,14 @@ const ResumeFile = () => {
                     <div className="text-sm text-gray-400 mb-1">Progress</div>
                     <div className="flex items-center gap-2">
                       <div className="w-16 bg-gray-800 rounded-full h-2">
-                        <div 
+                        <div
                           className="bg-indigo-600 h-2 rounded-full transition-all duration-500"
                           style={{ width: `${getFormProgress()}%` }}
                         ></div>
                       </div>
-                      <span className="text-xs text-indigo-400 font-semibold">{getFormProgress()}%</span>
+                      <span className="text-xs text-indigo-400 font-semibold">
+                        {getFormProgress()}%
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -635,7 +723,8 @@ const ResumeFile = () => {
                   </div>
                 </div>
                 <div className="text-sm text-gray-400">
-                  * At least one skill category (Frontend or Backend) is required
+                  * At least one skill category (Frontend or Backend) is
+                  required
                 </div>
               </div>
 
@@ -658,7 +747,8 @@ const ResumeFile = () => {
                     placeholder="Tell us about yourself, your goals, interests, or any additional information..."
                   />
                   <div className="text-xs text-gray-500 mt-1">
-                    Optional: Add any additional information about yourself that you'd like to include
+                    Optional: Add any additional information about yourself that
+                    you'd like to include
                   </div>
                 </div>
               </div>
@@ -669,14 +759,14 @@ const ResumeFile = () => {
                   <Briefcase className="h-4 w-4" />
                   <span>Work Experience</span>
                 </div>
-                
+
                 {/* Add Work Experience Form */}
                 <div className="bg-gray-800/20 border border-gray-700/30 rounded-lg p-4 space-y-4">
                   <div className="flex items-center gap-2 text-sm text-gray-300 font-medium">
                     <Plus className="h-4 w-4 text-green-400" />
                     <span>Add Work Experience</span>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -705,7 +795,7 @@ const ResumeFile = () => {
                       />
                     </div>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
                       Duration
@@ -719,7 +809,7 @@ const ResumeFile = () => {
                       placeholder="e.g. Jun 2024 - Dec 2024"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
                       Work Description
@@ -733,10 +823,14 @@ const ResumeFile = () => {
                       placeholder="Describe your responsibilities and achievements in this role..."
                     />
                   </div>
-                  
+
                   <button
                     onClick={addWorkExperience}
-                    disabled={!workExpForm.companyName.trim() || !workExpForm.jobRole.trim() || !workExpForm.duration.trim()}
+                    disabled={
+                      !workExpForm.companyName.trim() ||
+                      !workExpForm.jobRole.trim() ||
+                      !workExpForm.duration.trim()
+                    }
                     className="w-full bg-green-600/80 text-white py-2 px-4 rounded-lg hover:bg-green-700/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium text-sm flex items-center justify-center space-x-2"
                   >
                     <Plus className="h-4 w-4" />
@@ -755,9 +849,13 @@ const ResumeFile = () => {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <Building className="h-4 w-4 text-blue-400" />
-                            <span className="font-medium text-white">{exp.jobRole}</span>
+                            <span className="font-medium text-white">
+                              {exp.jobRole}
+                            </span>
                             <span className="text-gray-400">at</span>
-                            <span className="text-indigo-400 font-medium">{exp.companyName}</span>
+                            <span className="text-indigo-400 font-medium">
+                              {exp.companyName}
+                            </span>
                           </div>
                           <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
                             <Calendar className="h-3 w-3" />
@@ -833,7 +931,7 @@ const ResumeFile = () => {
                     {isGenerating ? (
                       <>
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        <span>Generating  your resume...</span>
+                        <span>Generating your resume...</span>
                       </>
                     ) : (
                       <>
@@ -844,10 +942,11 @@ const ResumeFile = () => {
                     )}
                   </span>
                 </button>
-                
+
                 {showPreview && (
                   <button
-                    onClick={regenerateWithCurrentData}
+                    // onClick={setIsRegenerateModalOpen(true)}
+                    onClick={() => setIsRegenerateModalOpen(true)}
                     disabled={isGenerating}
                     className="w-full bg-gray-700/60 text-white py-3 px-4 rounded-lg hover:bg-gray-600/60 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center space-x-2 border border-gray-600/30 hover:border-gray-500/30"
                   >
@@ -855,12 +954,16 @@ const ResumeFile = () => {
                     <span>Regenerate Resume</span>
                   </button>
                 )}
-                
+
                 {!isFormComplete() && (
                   <div className="bg-red-900/20 border border-red-600/30 rounded-lg p-3">
                     <div className="flex items-center gap-2 text-red-400 text-sm">
                       <AlertCircle className="h-4 w-4" />
-                      <span>Please fill in all required fields: Name, Job Title, Phone Number, Email, Location, and at least one skill category</span>
+                      <span>
+                        Please fill in all required fields: Name, Job Title,
+                        Phone Number, Email, Location, and at least one skill
+                        category
+                      </span>
                     </div>
                   </div>
                 )}
@@ -892,6 +995,45 @@ const ResumeFile = () => {
                 </div>
               </div>
 
+              {/* modal code */}
+
+              <Modal
+                isOpen={isRegenerateModalOpen}
+                onClose={() => setIsRegenerateModalOpen(false)}
+              >
+                <div className="text-center">
+                  <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900/30 border border-yellow-600/30 mb-4">
+                    <AlertCircle className="h-6 w-6 text-yellow-400" />
+                  </div>
+                  <h3 className="text-lg font-medium leading-6 text-white">
+                    Regenerate Resume
+                  </h3>
+                  <div className="mt-2 px-4 py-3">
+                    <p className="text-sm text-gray-400">
+                      This will regenerate the resume with your current form
+                      data. Any manual edits will be lost. Are you sure you want
+                      to continue?
+                    </p>
+                  </div>
+                  <div className="mt-5 sm:mt-6 flex justify-center gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsRegenerateModalOpen(false)}
+                      className="w-full inline-flex justify-center rounded-md border border-gray-600/80 px-4 py-2 bg-gray-700/80 text-base font-medium text-white hover:bg-gray-600/80"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleConfirmRegenerate}
+                      className="w-full inline-flex justify-center rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700"
+                    >
+                      Regenerate
+                    </button>
+                  </div>
+                </div>
+              </Modal>
+
               {!showPreview ? (
                 <div className="flex flex-col items-center justify-center h-96 text-gray-500">
                   <div className="relative mb-6">
@@ -900,9 +1042,12 @@ const ResumeFile = () => {
                       <Sparkles className="h-3 w-3 text-white" />
                     </div>
                   </div>
-                  <p className="text-xl mb-2 text-gray-300">No resume generated yet</p>
+                  <p className="text-xl mb-2 text-gray-300">
+                    No resume generated yet
+                  </p>
                   <p className="text-sm text-center max-w-xs">
-                    Fill in your information and click "Generate AI Resume" to create your professional resume
+                    Fill in your information and click "Generate AI Resume" to
+                    create your professional resume
                   </p>
                 </div>
               ) : (
@@ -927,18 +1072,18 @@ const ResumeFile = () => {
                       className="w-full px-3 py-3 bg-gray-900/30 border border-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none font-mono text-sm transition-all duration-200"
                       placeholder="AI generated resume content will appear here..."
                     />
-                    
+
                     <div className="mt-4 p-4 border border-gray-700/30 rounded-lg bg-gray-900/20">
                       <h4 className="font-semibold text-white mb-3 flex items-center gap-2">
                         <FileText className="h-4 w-4 text-blue-400" />
                         Formatted Preview:
                       </h4>
-                      <div 
+                      <div
                         className="text-sm prose prose-sm max-w-none text-gray-300 leading-relaxed"
-                        dangerouslySetInnerHTML={{ 
+                        dangerouslySetInnerHTML={{
                           __html: formatResumeContent(editedResumeText)
-                            .replace(/•/g, '• ')
-                            .replace(/\n\n/g, '<br><br>')
+                            .replace(/•/g, "• ")
+                            .replace(/\n\n/g, "<br><br>"),
                         }}
                       />
                     </div>
@@ -954,7 +1099,7 @@ const ResumeFile = () => {
                       <Save className="h-4 w-4" />
                       <span>Save Changes</span>
                     </button>
-                    
+
                     <button
                       onClick={discardChanges}
                       disabled={!hasUnsavedChanges}
@@ -963,7 +1108,7 @@ const ResumeFile = () => {
                       <RefreshCw className="h-4 w-4" />
                       <span>Discard</span>
                     </button>
-                    
+
                     <button
                       onClick={downloadPDF}
                       disabled={!editedResumeText}
@@ -973,7 +1118,7 @@ const ResumeFile = () => {
                       <span>Download PDF</span>
                     </button>
                   </div>
-                  
+
                   {hasUnsavedChanges && (
                     <div className="bg-yellow-900/20 border border-yellow-600/30 rounded-lg p-4">
                       <div className="flex items-start gap-3">
@@ -983,7 +1128,8 @@ const ResumeFile = () => {
                             You have unsaved changes
                           </p>
                           <p className="text-yellow-300/80 text-sm">
-                            Click "Save Changes" to keep your edits or "Discard" to revert to the last saved version.
+                            Click "Save Changes" to keep your edits or "Discard"
+                            to revert to the last saved version.
                           </p>
                         </div>
                       </div>

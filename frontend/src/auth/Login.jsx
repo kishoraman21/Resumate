@@ -38,9 +38,10 @@ export const Login = () => {
         }
       );
       console.log(data);
-      
+
       toast.success(data.message || "User logged in successfully");
       localStorage.setItem("token", data.token);
+      localStorage.setItem("username", data?.user?.username);
       navigate("/resume");
       setEmail("");
       setPassword("");
@@ -65,7 +66,7 @@ export const Login = () => {
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" />
         <span className="font-medium">Home</span>
       </button>
-      
+
       {/* Background decorative elements */}
       <div className="absolute top-0 left-0 w-64 h-64 bg-purple-600/10 rounded-full filter blur-3xl opacity-50 animate-blob"></div>
       <div className="absolute bottom-0 right-0 w-64 h-64 bg-indigo-600/10 rounded-full filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
@@ -77,12 +78,8 @@ export const Login = () => {
       >
         <div className="bg-[#1C1C23]/80 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/10">
           <div className="text-center mb-8">
-            <h2 className="text-4xl font-bold text-white mb-3">
-              Welcome Back
-            </h2>
-            <p className="text-gray-400">
-              Sign in to continue to our services
-            </p>
+            <h2 className="text-4xl font-bold text-white mb-3">Welcome Back</h2>
+            <p className="text-gray-400">Sign in to continue to our services</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
@@ -110,7 +107,6 @@ export const Login = () => {
                 <label className="block text-sm font-medium text-gray-400">
                   Password
                 </label>
-                
               </div>
               <div className="relative group">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 group-focus-within:text-[#A0A0F0] transition-colors" />
@@ -127,7 +123,11 @@ export const Login = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300"
                 >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
                 </button>
               </div>
             </div>
@@ -152,7 +152,10 @@ export const Login = () => {
           <div className="text-center mt-8">
             <p className="text-sm text-gray-400">
               Don't have an account?{" "}
-              <Link to="/signup" className="font-medium text-[#A0A0F0] hover:underline">
+              <Link
+                to="/signup"
+                className="font-medium text-[#A0A0F0] hover:underline"
+              >
                 Sign up
               </Link>
             </p>
