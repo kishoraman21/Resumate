@@ -181,8 +181,10 @@ const ResumeFile = () => {
         return;
       }
 
+      const API_BASE = import.meta.env.REACT_APP_API_URL;
+
       const response = await axios.post(
-        "http://localhost:5000/docs/create",
+        `${API_BASE}/docs/create`,
         {
           name: formData.name,
           jobTitle: formData.jobTitle,

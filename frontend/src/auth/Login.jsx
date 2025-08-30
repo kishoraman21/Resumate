@@ -19,13 +19,15 @@ export const Login = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const API_BASE = import.meta.env.REACT_APP_API_URL;
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/user/login",
+        `${API_BASE}/user/login`,
         {
           email,
           password,
