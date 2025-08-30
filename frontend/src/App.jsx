@@ -13,15 +13,17 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<LandingPage/>} />
-        <Route
-          path="/resume"
-          element={token ? <ResumeFile /> : <Navigate to={"/login"} />}
-        />
+        <Route path="/" element={<LandingPage />} />
+        {token ? (
+          <Route path="/resume" element={<ResumeFile />} />
+        ) : (
+          <Route path="/resume" element={<Navigate to="/login" replace />} />
+        )}
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
+
       <Toaster position="top-right" />
     </>
   );
