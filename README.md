@@ -1,6 +1,6 @@
 <div align="center">
 
-  <h1><strong>ResumAI</strong></h1>
+  <h1><strong>Resumate</strong></h1>
 
   <img src="https://github.com/kishoraman21/ResumAI/blob/32a75f579a80361c24cb1ebea9d7541fda69c088/Screenshot%202025-08-28%20015240.png" alt="ResumAI Demo" width="600"/>
 
