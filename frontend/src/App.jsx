@@ -14,11 +14,11 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        {token ? (
-          <Route path="/resume" element={<ResumeFile />} />
+        <Route path="/resume" element={<ResumeFile />} />
+        {/* {token ? (
         ) : (
           <Route path="/resume" element={<Navigate to="/login" replace />} />
-        )}
+        )} */}
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<ErrorPage />} />

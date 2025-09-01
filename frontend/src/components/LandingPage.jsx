@@ -13,17 +13,53 @@ import {
   Mail,
   Twitter,
   Github,
+  Plus,
+  Minus,
 } from "lucide-react";
 
 const LandingPage = () => {
   const [scrollY, setScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [currentSubtext, setCurrentSubtext] = useState(0);
+  const [openFAQ, setOpenFAQ] = useState(null);
 
   const subtexts = [
     "From blank page to job-ready in under 5 minutes.",
     "Resumate — Where intelligence meets opportunity",
     "First impressions matter. Make yours flawless.",
+  ];
+
+  const faqs = [
+    {
+      question: "What is Resumate?",
+      answer:
+        "Resumate is an AI-powered resume builder that helps you create professional, ATS-friendly resumes in minutes. Our advanced AI technology analyzes your information and crafts personalized resumes tailored to your target position.",
+    },
+    {
+      question: "Is Resumate free to use?",
+      answer:
+        "Yes! Resumate offers a completely free tier that allows you to create and download professional resumes without any cost. We believe everyone deserves access to quality resume creation tools.",
+    },
+    {
+      question: "How does the AI work?",
+      answer:
+        "Our AI analyzes your input information, understands industry standards, and generates content that highlights your strengths. It optimizes your resume for both human recruiters and Applicant Tracking Systems (ATS).",
+    },
+    {
+      question: "Can I customize my resume?",
+      answer:
+        "Absolutely! While our AI provides a strong foundation, you have full control to edit, customize, and refine your resume to match your personal style and specific job requirements.",
+    },
+    {
+      question: "Can I download my resume?",
+      answer:
+        "Absolutely! Once your AI-generated resume is ready, you can instantly download it in multiple formats including PDF and Word documents. Your resume is ready to send to employers immediately after creation.",
+    },
+    {
+      question: "Is my data secure?",
+      answer:
+        "Yes, we take data security seriously. Your personal information is encrypted and stored securely. We never share your data with third parties, and you maintain full control over your information.",
+    },
   ];
 
   useEffect(() => {
@@ -46,14 +82,43 @@ const LandingPage = () => {
   const scrollToSection = (sectionId) => {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
   };
-
-  const navigate = useNavigate();
+   const navigate = useNavigate()
   const handleGetStarted = () => {
-    navigate("/login");
+    navigate("/login")
+
   };
 
+  const toggleFAQ = (index) => {
+    setOpenFAQ(openFAQ === index ? null : index);
+  };
+  useEffect(() => {
+  const style = document.createElement('style');
+  style.textContent = `
+    ::-webkit-scrollbar { 
+      width: 8px; 
+    }
+    ::-webkit-scrollbar-track { 
+      background: #1C1C23; 
+      border-radius: 10px; 
+    }
+    ::-webkit-scrollbar-thumb { 
+      background: #A0A0F0; 
+      border-radius: 10px; 
+    }
+    ::-webkit-scrollbar-thumb:hover { 
+      background: #D9D9F3; 
+    }
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: #A0A0F0 #1C1C23;
+    }
+  `;
+  document.head.appendChild(style);
+  return () => document.head.removeChild(style);
+}, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1A1929] to-[#0C0B10] text-[#E0E0E0] font-sans overflow-hidden">
+   <div className="min-h-screen bg-gradient-to-b from-[#1A1929] to-[#0C0B10] text-[#E0E0E0] font-sans overflow-auto">
       {/* Background decorative elements */}
       <div className="absolute top-0 left-0 w-64 h-64 bg-purple-600/10 rounded-full filter blur-3xl opacity-50 animate-blob"></div>
       <div className="absolute bottom-0 right-0 w-64 h-64 bg-indigo-600/10 rounded-full filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
@@ -63,10 +128,13 @@ const LandingPage = () => {
         <div className="bg-[#1C1C23]/80 backdrop-blur-lg rounded-full border border-white/10 px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <div className="text-2xl font-bold">
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="text-2xl font-bold hover:opacity-80 transition-opacity cursor-pointer"
+            >
               <span className="text-white">Resu</span>
               <span className="text-[#A0A0F0]">mate</span>
-            </div>
+            </button>
 
             {/* Navigation Tabs */}
             <div className="flex items-center gap-2">
@@ -83,6 +151,13 @@ const LandingPage = () => {
                 className="group relative px-6 py-3 text-gray-300 hover:text-white transition-all duration-300"
               >
                 <span className="relative z-10 font-medium">Why Us</span>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-[#A0A0F0] group-hover:w-full transition-all duration-300"></div>
+              </button>
+              <button
+                onClick={() => scrollToSection("faqs")}
+                className="group relative px-6 py-3 text-gray-300 hover:text-white transition-all duration-300"
+              >
+                <span className="relative z-10 font-medium">FAQs</span>
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-[#A0A0F0] group-hover:w-full transition-all duration-300"></div>
               </button>
 
@@ -107,11 +182,11 @@ const LandingPage = () => {
                 : "translate-y-10 opacity-0"
             }`}
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 mt-10 text-white leading-tight story-script">
+            <h1 className="text-5xl md:text-7xl font-bold mb-8 mt-10 text-white leading-tight roboto">
               Need a resume fast?
               <br />
-              Let <span className="text-[#A0A0F0]">AI</span> do the heavy
-              lifting.
+              Let <span className="text-[#A0A0F0] story-script">AI</span> do the
+              heavy lifting.
             </h1>
 
             {/* Image Placeholder */}
@@ -119,7 +194,7 @@ const LandingPage = () => {
               <div className="w-full max-w-4xl h-[600px] bg-[#1C1C23]/50 rounded-2xl border border-white/10 flex items-center justify-center backdrop-blur-sm shadow-2xl shadow-black/50">
                 {/* You can place your image here */}
                 <img
-                  src="./public/hero.png"
+                  src="/hero.png"
                   alt="Resume preview"
                   className="rounded-lg object-cover w-full h-full"
                 />
@@ -149,7 +224,7 @@ const LandingPage = () => {
       </section>
 
       {/* What Section */}
-      <section id="features" className="relative z-10 py-20 px-4">
+      <section id="features" className="relative z-10 py-30 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white">
@@ -201,7 +276,7 @@ const LandingPage = () => {
       </section>
 
       {/* Why Section */}
-      <section id="why-section" className="relative z-10 py-20 px-4">
+      <section id="why-section" className="relative z-10 py-30 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white">
@@ -260,17 +335,18 @@ const LandingPage = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-[#A0A0F0]/10 to-[#D9D9F3]/10 rounded-2xl blur-3xl"></div>
               <div className="relative bg-[#1C1C23]/80 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
                 <div className="text-center">
-                  <Users className="w-16 h-16 text-[#A0A0F0] mx-auto mb-6" />
-                  <div className="text-4xl font-bold text-white mb-2">
-                    10,000+
+                  <Brain className="w-16 h-16 text-[#A0A0F0] mx-auto mb-6" />
+                  <div className="text-2xl font-bold text-white mb-4">
+                    AI-Powered Technology
                   </div>
-                  <div className="text-gray-400 mb-4">
-                    Successful Resumes Created
+                  <div className="text-gray-400 mb-6 leading-relaxed">
+                    Advanced algorithms trained on thousands of successful
+                    resumes to ensure maximum impact
                   </div>
                   <div className="text-2xl font-bold text-[#A0A0F0] mb-2">
-                    95%
+                    100%
                   </div>
-                  <div className="text-gray-400">Interview Success Rate</div>
+                  <div className="text-gray-400">Free to Use</div>
                 </div>
               </div>
             </div>
@@ -278,25 +354,56 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative z-10 py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-            Ready to Transform Your Career?
-          </h2>
-          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-            Join thousands of professionals who've already discovered the power
-            of AI-driven resume creation.
-          </p>
-          <button
-            className="group relative px-12 py-4 bg-[#D9D9F3] text-black rounded-full text-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#D9D9F3]/25 transform hover:-translate-y-1"
-            onClick={handleGetStarted}
-          >
-            <span className="relative z-10 flex items-center gap-2">
-              Get Started Now
-              <Sparkles className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-            </span>
-          </button>
+      {/* FAQ Section */}
+      <section id="faqs" className="relative z-10 py-30 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+              FREQUENTLY ASKED QUESTIONS
+            </h2>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+              Got questions? We've got answers.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <div
+                key={index}
+                className="bg-[#1C1C23]/80 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 hover:border-[#A0A0F0]/50"
+              >
+                <button
+                  onClick={() => toggleFAQ(index)}
+                  className="w-full px-8 py-6 text-left flex items-center justify-between hover:bg-white/5 transition-colors"
+                >
+                  <span className="text-xl font-semibold text-white">
+                    {faq.question}
+                  </span>
+                  <div className="ml-4 flex-shrink-0">
+                    {openFAQ === index ? (
+                      <Minus className="w-6 h-6 text-[#A0A0F0]" />
+                    ) : (
+                      <Plus className="w-6 h-6 text-[#A0A0F0]" />
+                    )}
+                  </div>
+                </button>
+
+                <div
+                  className={`transition-all duration-300 ease-in-out ${
+                    openFAQ === index
+                      ? "max-h-96 opacity-100"
+                      : "max-h-0 opacity-0"
+                  } overflow-hidden`}
+                >
+                  <div className="px-8 pb-6">
+                    <p className="text-gray-400 leading-relaxed">
+                      {faq.answer}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

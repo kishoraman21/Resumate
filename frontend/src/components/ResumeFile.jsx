@@ -8,14 +8,14 @@ import {
   Code,
   Download,
   Save,
-  Sparkles,
+  Sparkles, 
   Edit3,
   FileText,
   LogOut,
   RefreshCw,
   ArrowLeft,
   CheckCircle,
-  AlertCircle,
+  AlertCircle,  
   Zap,
   Crown,
   Plus,
@@ -184,7 +184,7 @@ const ResumeFile = () => {
       const API_BASE = import.meta.env.REACT_APP_API_URL;
 
       const response = await axios.post(
-        `${API_BASE}/docs/create`,
+        `https://resumate-0yaz.onrender.com/docs/create`,
         {
           name: formData.name,
           jobTitle: formData.jobTitle,

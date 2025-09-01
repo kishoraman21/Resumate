@@ -34,7 +34,7 @@ export const Signup = () => {
 
     try {
       const { data } = await axios.post(
-        `${API_BASE}/user/signup`,
+        `https://resumate-0yaz.onrender.com/user/signup`,
         {
           username: name,
           email,
@@ -62,25 +62,25 @@ export const Signup = () => {
       setIsLoading(false);
     }
   };
-  
+
   const handleBackToHome = () => {
     navigate("/");
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1A1929] to-[#0C0B10] text-[#E0E0E0] flex items-center justify-center p-4 font-sans overflow-hidden">
-        {/* Back to Home Button */}
-        <button
-            onClick={handleBackToHome}
-            className="fixed top-6 left-6 z-50 group flex items-center gap-2 px-4 py-2 bg-[#1C1C23]/80 backdrop-blur-lg rounded-lg border border-white/10 text-gray-300 hover:text-white transition-all duration-200 hover:bg-white/20"
-        >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" />
-            <span className="font-medium">Home</span>
-        </button>
+      {/* Back to Home Button */}
+      <button
+        onClick={handleBackToHome}
+        className="fixed top-6 left-6 z-50 group flex items-center gap-2 px-4 py-2 bg-[#1C1C23]/80 backdrop-blur-lg rounded-lg border border-white/10 text-gray-300 hover:text-white transition-all duration-200 hover:bg-white/20"
+      >
+        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" />
+        <span className="font-medium">Home</span>
+      </button>
 
-        {/* Background decorative elements */}
-        <div className="absolute top-0 left-0 w-64 h-64 bg-purple-600/10 rounded-full filter blur-3xl opacity-50 animate-blob"></div>
-        <div className="absolute bottom-0 right-0 w-64 h-64 bg-indigo-600/10 rounded-full filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
+      {/* Background decorative elements */}
+      <div className="absolute top-0 left-0 w-64 h-64 bg-purple-600/10 rounded-full filter blur-3xl opacity-50 animate-blob"></div>
+      <div className="absolute bottom-0 right-0 w-64 h-64 bg-indigo-600/10 rounded-full filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
 
       <div
         className={`relative z-10 w-full max-w-md transform transition-all ease-in-out duration-700 ${
@@ -92,9 +92,7 @@ export const Signup = () => {
             <h2 className="text-4xl font-bold text-white mb-3">
               Create your account
             </h2>
-            <p className="text-gray-400">
-              Start building with our services
-            </p>
+            <p className="text-gray-400">Start building with our services</p>
           </div>
 
           <form onSubmit={handleRegister} className="space-y-6">
@@ -154,7 +152,11 @@ export const Signup = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300"
                 >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
                 </button>
               </div>
             </div>
@@ -179,7 +181,11 @@ export const Signup = () => {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300"
                 >
-                  {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
                 </button>
               </div>
             </div>
@@ -204,7 +210,10 @@ export const Signup = () => {
           <div className="text-center mt-8">
             <p className="text-sm text-gray-400">
               Already have an account?{" "}
-              <Link to="/login" className="font-medium text-[#A0A0F0] hover:underline">
+              <Link
+                to="/login"
+                className="font-medium text-[#A0A0F0] hover:underline"
+              >
                 Sign in
               </Link>
             </p>
