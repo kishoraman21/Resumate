@@ -35,7 +35,7 @@
 - Express.js
 - MongoDB (via Mongoose)
 
-**AI/NLP** *(optional/expandable)*
+**AI/NLP** 
 - Google Gemini AI APIs *(for generating final resume content)*
 
 ---
