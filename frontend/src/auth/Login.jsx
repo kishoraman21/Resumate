@@ -27,8 +27,8 @@ export const Login = () => {
 
     try {
       const { data } = await axios.post(
-        `https://resumate-0yaz.onrender.com/user/login`,
-        // `http://localhost:5173/user/login`,
+        // `https://resumate-0yaz.onrender.com/user/login`,
+        `http://localhost:5000/user/login`,
         {
           email,
           password,
@@ -67,7 +67,6 @@ export const Login = () => {
         className="fixed top-6 left-6 z-50 group flex items-center gap-2 px-4 py-2 bg-[#1C1C23]/80 backdrop-blur-lg rounded-lg border border-white/10 text-gray-300 hover:text-white transition-all duration-200 hover:bg-white/20"
       >
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" />
-        <span className="font-medium">Home</span>
       </button>
       <button
         // onClick={handleBackToHome}

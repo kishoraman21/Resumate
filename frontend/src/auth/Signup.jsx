@@ -34,7 +34,8 @@ export const Signup = () => {
 
     try {
       const { data } = await axios.post(
-        `https://resumate-0yaz.onrender.com/user/signup`,
+        // `https://resumate-0yaz.onrender.com/user/signup`,
+        `http://localhost:5173/user/singup`,
         {
           username: name,
           email,
