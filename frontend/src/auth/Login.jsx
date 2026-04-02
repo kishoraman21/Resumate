@@ -19,7 +19,7 @@ export const Login = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const API_BASE = import.meta.env.REACT_APP_API_URL;
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -28,7 +28,7 @@ export const Login = () => {
     try {
       const { data } = await axios.post(
         // `https://resumate-0yaz.onrender.com/user/login`,
-        `http://localhost:5000/user/login`,
+        `${API_BASE}/user/login`,
         {
           email,
           password,

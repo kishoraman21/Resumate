@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const { generateToken } = require("../jwt/token");
 
 // Signup
-const singup = async (req, res) => {
+const signup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
@@ -65,4 +65,4 @@ const logout = (req, res) => {
 };
 
 // Export all functions
-module.exports = { singup, login, logout };
+module.exports = { signup, login, logout };

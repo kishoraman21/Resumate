@@ -181,11 +181,11 @@ const ResumeFile = () => {
         return;
       }
 
-      const API_BASE = import.meta.env.REACT_APP_API_URL;
+      const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
       const response = await axios.post(
         // `https://resumate-0yaz.onrender.com/docs/create`,
-        'http://localhost:5000/docs/create',
+        `${API_BASE}/docs/create`,
         {
           name: formData.name,
           jobTitle: formData.jobTitle,

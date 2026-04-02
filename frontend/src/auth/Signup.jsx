@@ -30,12 +30,12 @@ export const Signup = () => {
     }
     setIsLoading(true);
 
-    const API_BASE = import.meta.env.REACT_APP_API_URL;
+    const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
     try {
       const { data } = await axios.post(
         // `https://resumate-0yaz.onrender.com/user/signup`,
-        `http://localhost:5173/user/singup`,
+        `${API_BASE}/user/signup`,
         {
           username: name,
           email,
