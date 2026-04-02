@@ -14,18 +14,17 @@ const app = express();
 //middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  apiTracker({
-    apikey: process.env.APIDECK_API_KEY,
-    trackerUrl: "https://apideck.site/",
-    // trackerUrl: "http://localhost:5000/",
-  })
-);
+if (process.env.APIDECK_API_KEY) {
+  app.use(
+    apiTracker({
+      apikey: process.env.APIDECK_API_KEY,
+      trackerUrl: "https://apideck.site/",
+    })
+  );
+}
 app.use(
   cors({
-    // origin: process.env.CORS_ORIGIN,
-    // origin: "*"
-    origin: "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN,
     credentials: true,
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: ["Content-Type", "Authorization"],

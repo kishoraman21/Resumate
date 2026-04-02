@@ -30,7 +30,7 @@ export const Signup = () => {
     }
     setIsLoading(true);
 
-    const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const API_BASE = import.meta.env.VITE_API_URL || "https://resumate-0yaz.onrender.com";
 
     try {
       const { data } = await axios.post(

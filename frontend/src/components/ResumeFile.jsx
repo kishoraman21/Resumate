@@ -181,7 +181,7 @@ const ResumeFile = () => {
         return;
       }
 
-      const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const API_BASE = import.meta.env.VITE_API_URL || "https://resumate-0yaz.onrender.com";
 
       const response = await axios.post(
         // `https://resumate-0yaz.onrender.com/docs/create`,
